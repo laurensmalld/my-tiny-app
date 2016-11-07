@@ -1,0 +1,15 @@
+
+<h3> Welcome to Lauren's Tiny App </h3>
+
+
+<%if(user_id){%>
+  <form method="POST" action="/logout"><%=email %>
+  <input type="submit" value="Log Out"/>
+  </form>
+ <%}else{%>
+ <h4> Please register and/or log in to start shortening URLs: </h4>
+<a href="/login">Log In Here</a>
+<br>
+<a href="/register">Register Here</a>
+    <%}%>
+    </form>

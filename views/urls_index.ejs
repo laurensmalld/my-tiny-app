@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+</head>
+<body>
+ <% include partials/_header %>
+ <br>
+ <br>
+<% if(user_id) { %>
+<% for (key in urls) { %>
+ Short URL <a href="<%=urls[key]%>" target="_blank"><%=key%></a>
+ directs to <%= urls[key];  %>
+ <form action="/urls/<%= key %>">
+ <input type="submit" value="Edit" style="margin:5px;"/>
+ </form>
+  <!-- <a href = "/urls/<%= key %>">Click here to edit</a> -->
+  <br>
+  <form method="POST" action="/urls/<%=key%>/delete">
+  <input type="submit" value="Delete" style="margin:5px;"/>
+  </form>
+  <br>
+
+<% } %>
+  <a href="/urls/new">Shorten another URL</a>
+<% } %>
+<br>
+
+
+</body>
+</html>
+
+

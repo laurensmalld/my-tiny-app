@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<body>
+
+<h1 style="color:green"> Update your URL below...</h1>
+
+<h3>You are updating short URL => <%= shortURL %> </h3>
+
+  <form action="/urls/<%= shortURL %>/update" method="POST" style="margin:150px;">
+    <label for="newLongURL">Enter the new long URL here:</label>
+    <input id="longURLreplace" type="text" name="longURLreplace" placeholder="http://" style="width: 300px">
+    <input type="submit" value="Update">
+    </form>
+  </body>
+</html>
+
