@@ -23,7 +23,7 @@ function generateRandomString() {
   return randomStr;
 }
 
-var users = {};
+var users = {"394023lsdklf":{email:"al@sdfj.com",password:'asfd'}};
 var urlDatabase = {
   "pppppp": "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com",
@@ -51,7 +51,7 @@ var searchPassword = function(obj, query) {
 
 // home page
 app.get("/", (req, res) => {
-  var templateVars = {};
+  // var templateVars = {};
   if (users[req.session.user_id]) {
     res.redirect("/urls");
   } else {
@@ -61,51 +61,75 @@ app.get("/", (req, res) => {
 
 //show urls created, edit button, delete button, link to add new
 app.get("/urls", (req, res) => {
-  var templateVars = {};
-  if (users[req.session.user_id]) {
-    templateVars = {urls: urlDatabase, user_id: req.session.user_id, email: users[req.session.user_id]['email']};
-  } else {
-    templateVars = {user_id: null, email: null}
+  let templateVars = {}
+  let currentUserId = req.session.user_id;
+  console.log(currentUserId);
+  if (currentUserId) {
+    let currentUserUrls = urlDatabase;
+    templateVars = {urls: currentUserUrls, user_id: req.session.user_id, email: users['email']};
   }
   res.render("urls_index", templateVars);
 });
 
-app.post("/urls", (req, res) => {
-  urlDatabase[generateRandomString()] = req.body.longURL;
-  res.redirect('/urls')
-});
-
 //submission form for new urls
 app.get("/urls/new", (req, res) => {
+  let currentUserId = req.session.user_id;
+  // if a current User has no place for urls
+  if (!urlDatabase[currentUserId]) {
+    // make one for them
+    urlDatabase[currentUserId] = {}
+  }
   var templateVars = {urls: urlDatabase, user_id: req.session.user_id, email: users[req.session.user_id].email};
   res.render("urls_new", templateVars);
 });
 
+// posting new url here
+app.post("/urls", (req, res) => {
+  let currentUserId = req.session.user_id;
+  let currentUserUrls = urlDatabase[currentUserId];
+  let newShortURL = generateRandomString()
+  currentUserUrls[newShortURL]= req.body.longURL;
+  res.redirect('/urls')
+});
+
+
+
 //url with long version, update and delete buttons
 app.get("/urls/:id", (req, res) => {
-  var longURL = urlDatabase[req.params.id];
-  var templateVars = { shortURL: req.params.id, website: longURL };
+  let shortURL = req.params.id;
+  let currentUserUrls = urlDatabase[req.session.user_id];
+  let templateVars = {shortURL:shortURL,longURL:currentUserUrls[shortURL]}
   res.render("urls_show", templateVars);
 });
 
 
 app.get("/u/:shortURL", (req, res) => {
-  var shortURL = req.params.shortURL;
-  var longURL = urlDatabase[longURL];
-  res.redirect(302, longURL);
+  //for each user_id, get the user's urls, get the shortURL from params, find shortURL in database to get its value longURL,
+  // redirect to longURL (if it exists, if not tell them it does not exist)
+  Object.keys(urlDatabase).forEach(user_id =>{
+    var user_urls = urlDatabase[user_id];
+    let shortURL = req.params.shortURL;
+    var longURL = user_urls[shortURL];
+    if (longURL) {
+      res.redirect(302, longURL);
+    }
+  })
+  res.redirect(404).send("Page not found");
 });
 
 //delete short and long urls
 app.post("/urls/:id/delete", (req, res) => {
-  delete urlDatabase[req.params.id];
+  let shortURL = req.params.id;
+  var user_urls = urlDatabase[user_id];
+  delete user_urls[shortURL];
   res.redirect(302, "/urls");
 });
 
 //update long url
 app.post("/urls/:id/update", (req, res) => {
-  var longURLreplace = req.body.longURLreplace;
-  var id = req.params.id;
-  urlDatabase[id] = longURLreplace;
+  var newLongURL = req.body.longURLreplace;
+  var shortURL = req.params.id;
+  urlDatabase[shortURL] = newLongURL;
   res.redirect(302, "/urls");
 });
 
@@ -152,15 +176,14 @@ app.post("/register", (req, res) => {
   else if (searchEmail(users, req.body.email)) {
     res.status(400).send("That email is already registered.");
   } else {
-  var userRandomID = {};
-  userRandomID['id'] = generateRandomString();
-  userRandomID['email'] = req.body.email;
-  userRandomID['password'] = bcrypt.hashSync(req.body.password, 10);
-  users[userRandomID['id']] = userRandomID;
-  req.session.user_id = userRandomID['id'];
+  const user_id = generateRandomString();
+  const newUser = {'email': req.body.email, 'password': bcrypt.hashSync(req.body.password, 10)};
+  users[user_id]= newUser;
+  req.session.user_id = user_id;
   res.redirect("/urls");
   }
 });
+
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
