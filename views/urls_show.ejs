@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <body>
+<% include partials/_header %>
 
 <h1 style="color:green"> Update your URL below...</h1>
 
-<h3>You are updating short URL => <%= shortURL %> </h3>
+<h3>You are updating => <%= shortURL %> </h3>
 
   <form action="/urls/<%= shortURL %>/update" method="POST" style="margin:150px;">
     <label for="newLongURL">Enter the new long URL here:</label>

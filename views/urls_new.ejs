@@ -3,13 +3,17 @@
   <head></head>
   <body style="font-size:20px; padding:50px;">
     <% include partials/_header %>
-    <% if (users[user_id]) { %>
+    <% if (email) { %>
     <form action="/urls" method="POST" style="margin:150px;">
       <label for="longURL">Enter a URL:</label>
-      <input id="longURL" type="text" name="longURL" placeholder="Include http://" style="width: 300px">
+      <input id="longURL" type="url" name="longURL" placeholder="Include http://" style="width: 300px">
       <input type="submit" value="Submit">
     </form>
-    <%}%>
+    <%} else {%>
+      <h3>You must register and/or login to shorten a URL:</h3>
+      <a href="/login">Login</a>
+      <a href="/register">Register</a>
+    <% } %>
   </body>
 </html>
 

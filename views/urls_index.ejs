@@ -6,24 +6,21 @@
  <% include partials/_header %>
  <br>
  <br>
-<% if (user_id) { %>
+ <h4>Your shortened URLs...</h4>
+<% if (email) { %>
 <% for (key in urls) { %>
- <a href="<%=urls[key]%>" target="_blank">Short URL </a>
- directs to <%= urls[key].value %>
+  <li><a href="/u/<%=key%>" target="_blank"><%=key%></a> redirects to <%=urls[key]%>
 
- <form action="/urls/<%= urls[key] %>">
- <input type="submit" value="Edit" style="margin:5px;"/>
- </form>
-  <!-- <a href = "/urls/<%= key %>">Click here to edit</a> -->
-  <br>
-  <form method="POST" action="/urls/<%= user_id[key]%>/delete">
-  <input type="submit" value="Delete" style="margin:5px;"/>
-  </form>
+ <form action="/urls/<%=key%>" method="GET"><input type="submit" value="Edit" style="margin:5px;"/></form>
+<form method="POST" action="/urls/<%=key%>/delete"><input type="submit" value="Delete" style="margin:5px;"/></form>
+</li>
    <% } %>
  <br>
   <a href="/urls/new">Shorten another URL</a>
 <% } else { %>
-  <a href="/login">You must login to shorten emails</a>
+  <h4>You must register/login first to shorten emails</h4>
+      <a href="/login">Login</a>
+      <a href="/register">Register</a>
   <% } %>
 </body>
 </html>

@@ -1,9 +1,10 @@
 
-<h3> Welcome to Lauren's Tiny App </h3>
+<h3> Welcome to Tiny App </h3>
 
 
-<%if (user_id) { %>
-  <form method="POST" action="/logout"><%=email %>
+<%if (email) { %>
+  <h4>Logged in as:</h4> <%= email %>
+  <form method="POST" action="/logout">
   <input type="submit" value="Log Out"/>
   </form>
 <% } else { %>
